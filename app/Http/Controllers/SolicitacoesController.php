@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Solicitacao;
 use App\Models\Especialidade;
+use App\Models\Status;
 
 class SolicitacoesController extends Controller
 {
@@ -60,7 +61,10 @@ class SolicitacoesController extends Controller
      */
     public function edit($id)
     {
-        return response(Solicitacao::with('especialidades')->where('id',$id)->first());
+        $response = Solicitacao::with('especialidades')->where('id',$id)->first();
+        $response["especialidades_list"] = Especialidade::all();
+        $response["status_list"] = Status::all();
+        return response($response);
     }
 
     /**
