@@ -1,0 +1,61 @@
+CREATE DATABASE solicitacoes;
+use solicitacoes;
+CREATE TABLE perfis (
+id INT PRIMARY KEY AUTO_INCREMENT,
+nome VARCHAR(255) NOT NULL
+);
+CREATE TABLE users (
+id INT PRIMARY KEY AUTO_INCREMENT,
+name VARCHAR(255) NOT NULL,
+email VARCHAR(255) UNIQUE NOT NULL,
+password VARCHAR(255) NOT NULL,
+perfis_id INT,
+FOREIGN KEY (perfis_id) REFERENCES perfis(id)
+);
+CREATE TABLE password_resets (
+email VARCHAR(255) NOT NULL,
+token VARCHAR(255) UNIQUE NOT NULL
+);
+CREATE TABLE personal_access_tokens (
+id INT PRIMARY KEY AUTO_INCREMENT,
+name VARCHAR(255) NOT NULL,
+token VARCHAR(64) UNIQUE NOT NULL,
+abilities VARCHAR(255)
+);
+CREATE TABLE especialidades (
+id INT PRIMARY KEY AUTO_INCREMENT,
+nome VARCHAR(255) NOT null
+);
+CREATE TABLE status (
+id INT PRIMARY KEY AUTO_INCREMENT,
+nome VARCHAR(255) NOT null
+);
+CREATE TABLE motivos_reprovacao (
+id INT PRIMARY KEY AUTO_INCREMENT,
+nome VARCHAR(255) NOT null
+);
+CREATE TABLE solicitacoes (
+id INT PRIMARY KEY AUTO_INCREMENT,
+nome_paciente VARCHAR(255) NOT null,
+cpf_paciente VARCHAR(11) NOT null,
+cidade_paciente VARCHAR(255) NOT null,
+uf_paciente VARCHAR(2) NOT null,
+descricao TEXT not null,
+especialidades_id INT,
+status_id INT,
+motivos_reprovacao_id INT default null,
+FOREIGN KEY (especialidades_id) REFERENCES especialidades(id),
+FOREIGN KEY (status_id) REFERENCES status(id),
+FOREIGN KEY (motivos_reprovacao_id) REFERENCES motivos_reprovacao(id)
+);
+
+insert into perfis (nome) values ('Médico de Família'),('Médico Regulador');
+insert into users (name,email,password,perfis_id) values 
+('Ana Albuquerque','ana.albuquerque@saude2.gov2.br','password',1),
+('Joice Silva','joice.silva@hsl2.org2.br','password',2);
+insert into especialidades (nome) values 
+('Cardiologia'),('Endocrinologia'),('Ortopedia'),('Reumatologia');
+insert into status (nome) values 
+('Pendente'),('Aprovado'),('Reprovado');
+insert into motivos_reprovacao (nome) values 
+('Manter na atenção primária'),('Informações Insuficientes'),('Outros');
