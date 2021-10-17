@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Solicitacao;
+use App\Models\Especialidade;
 
 class SolicitacoesController extends Controller
 {
@@ -14,7 +15,7 @@ class SolicitacoesController extends Controller
      */
     public function index()
     {
-        return response(Solicitacao::with('especialidades')->get());
+        return response(Solicitacao::with('especialidades')->with('status')->get());
     }
 
     /**
@@ -35,7 +36,9 @@ class SolicitacoesController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        
+        Solicitacao::create($request->input());
+        return response(['mensagem' => "Registro criado com sucesso", "ok" => true]);
     }
 
     /**
@@ -46,7 +49,7 @@ class SolicitacoesController extends Controller
      */
     public function show($id)
     {
-        //
+        return response(Solicitacao::with('especialidades')->where('id',$id)->first());
     }
 
     /**
@@ -69,7 +72,9 @@ class SolicitacoesController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        // return response($request->input());
+        Solicitacao::where('id',$id)->update($request->input());
+        return response(['mensagem' => 'Registro alterado com sucesso',"ok" => true]);
     }
 
     /**
@@ -80,15 +85,19 @@ class SolicitacoesController extends Controller
      */
     public function destroy($id)
     {
-        //
+        Solicitacao::destroy($id);
     }
 
     public function search(request $request)
     {
-        $constraint = fn($q) => $q->where('nome_paciente','like', "%{$request->search}%");
-        $solicitacoes = Solicitacao::with('especialidades')->where($constraint)->get();
-        $response = $solicitacoes->isEmpty() ? Solicitacao::with('especialidades')->get() : $solicitacoes;
+        if ($request->type === "status" && $request->search === "all") {
+            return response(Solicitacao::with('especialidades')->with('status')->get());
+        }
+
+        $constraint = $request->type === "nome" 
+            ? fn($q) => $q->where('nome_paciente','like', "%{$request->search}%")
+            : fn($q) => $q->where('status_id',$request->search);
         
-        return response($response);
+        return response(Solicitacao::with('especialidades')->with('status')->where($constraint)->get());
     }
 }

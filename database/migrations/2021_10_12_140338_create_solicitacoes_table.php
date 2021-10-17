@@ -20,6 +20,8 @@ class CreateSolicitacoesTable extends Migration
             $table->string('cidade_paciente');
             $table->string('uf_paciente');
             $table->foreignId('especialidades_id')->constrained();
+            $table->foreignId('status_id')->constrained('status');
+            $table->foreignId('motivos_reprovacao_id')->nullable()->constrained("motivos_reprovacao");
             $table->longText('descricao');
             $table->timestamps();
         });

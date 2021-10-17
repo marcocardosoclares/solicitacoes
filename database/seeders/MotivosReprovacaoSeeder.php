@@ -15,7 +15,7 @@ class MotivosReprovacaoSeeder extends Seeder
     public function run()
     {
         DB::table('motivos_reprovacao')->insert([[
-            'nome' => 'Pendente',
+            'nome' => 'Manter na atenção primária',
         ],
         [
             'nome' => 'Informações Insuficientes',
